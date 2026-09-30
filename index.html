@@ -41,7 +41,6 @@
     .toolbar { display:none; }
     .sheet { margin:0; box-shadow:none; page-break-after:always; }
     .row input:focus { background:transparent; }
-    input[type="date"]::-webkit-calendar-picker-indicator { display:none; }
     * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
 </style>
@@ -55,12 +54,8 @@
   <button onclick="autoNumber()">เติมเลข NO# อัตโนมัติ</button>
 
   <label>Description (ทุกป้าย)<input id="allDesc"></label>
-  <label>Date PM (ทุกป้าย)<input id="allDate" type="date"></label>
   <label>PM By (ทุกป้าย)<input id="allBy"></label>
   <button onclick="fillAll()">ใส่ทุกป้าย</button>
-
-  <label>Due PM (เดือนถัดไป)<input id="months" class="sm" type="number" value="6"></label>
-  <button onclick="calcDue()">คำนวณ Due PM</button>
 
   <button class="gray" onclick="clearAll()">ล้างข้อมูล</button>
   <button class="print" onclick="window.print()">พิมพ์</button>
@@ -86,8 +81,8 @@ function labelHTML(i){
     <div class="title">Preventive<br>maintenance</div>
     <div class="row"><span>NO# :</span><input data-f="no" data-i="${i}"></div>
     <div class="row"><span>Description :</span><input data-f="desc" data-i="${i}"></div>
-    <div class="row"><span>Date PM :</span><input type="date" data-f="date" data-i="${i}"></div>
-    <div class="row"><span>Due PM :</span><input type="date" data-f="due" data-i="${i}"></div>
+    <div class="row"><span>Date PM :</span><input data-f="date" data-i="${i}"></div>
+    <div class="row"><span>Due PM :</span><input data-f="due" data-i="${i}"></div>
     <div class="row"><span>PM By :</span><input data-f="by" data-i="${i}"></div>
   </div>`;
 }
@@ -103,22 +98,11 @@ function autoNumber(){
   save();
 }
 function fillAll(){
-  const map = {desc:'allDesc', date:'allDate', by:'allBy'};
+  const map = {desc:'allDesc', by:'allBy'};
   for(const f in map){
     const v = document.getElementById(map[f]).value;
     if(v) all(f).forEach(el=> el.value = v);
   }
-  save();
-}
-function calcDue(){
-  const m = +document.getElementById('months').value || 0;
-  const dues = all('due');
-  all('date').forEach((el,i)=>{
-    if(!el.value) return;
-    const d = new Date(el.value);
-    d.setMonth(d.getMonth()+m);
-    dues[i].value = d.toISOString().slice(0,10);
-  });
   save();
 }
 function clearAll(){
